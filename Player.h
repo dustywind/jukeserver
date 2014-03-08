@@ -1,4 +1,6 @@
-/* virtual, abstract class */
+/* virtual, abstract class.
+ * Each implemented player has also to implement these methods
+*/
 
 #include "jukebox.h"
 
