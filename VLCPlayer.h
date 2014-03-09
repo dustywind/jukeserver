@@ -47,7 +47,7 @@ class VLCPlayer : public Player {
 		/* helper methods */
 		// create a media-player object which can be used by the other methods
 		libvlc_media_player_t *get_current_media_player( void );
-		bool clear_current_media_player( void );
+		void clear_current_media_player( void );
 
 		/* inherited from Player.h */
 		bool create_list( int, song_t * );	// create a list of songs, which shall be played in
@@ -56,9 +56,11 @@ class VLCPlayer : public Player {
 		bool clear_list( void );
 
 		// just "forward" these methods and let the vlc-lib handle everything
+		bool toggle_play_pause( void ); // helper method
 		bool play( void );
 		bool pause( void );
 		bool resume( void );
+		bool stop( void );
 
 		//
 		bool previous( void );

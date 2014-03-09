@@ -31,7 +31,17 @@ int main(int argc, char **argv) {
 	p->create_list( 1, &narf );
 	p->play();
 
-	sleep( 20 );
+	sleep( 5 );
+
+	p->pause();
+
+	sleep( 5 );
+
+	p->resume();
+
+	sleep( 5 );
+
+	p->stop();
 
 	MediaPlayerFactory::destroy_player();
 

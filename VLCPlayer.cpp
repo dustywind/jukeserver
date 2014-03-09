@@ -19,8 +19,8 @@ VLCPlayer::VLCPlayer() {
 }
 
 VLCPlayer::~VLCPlayer() {
+	this->clear_current_media_player();
 	libvlc_release( this->vlc_instance );
-
 	this->clear_list();
 }
 libvlc_media_player_t *VLCPlayer::get_current_media_player( void ) {
@@ -34,22 +34,31 @@ libvlc_media_player_t *VLCPlayer::get_current_media_player( void ) {
 			libvlc_media_t *m = libvlc_media_new_path(	this->vlc_instance,
 														this->playmanager.songpath );
 			if( m == NULL ) {
+				delete [] this->playmanager.songpath;
 				// TODO throw exception?
 				return NULL;
 			}
 
 			this->playmanager.mp = libvlc_media_player_new_from_media( m );
+			if( this->playmanager.mp == NULL ) {
+				delete [] this->playmanager.songpath;
+				// TODO throw exception?
+				// libvlc_media_release( m );
+				// return NULL;
+			}
 
 			libvlc_media_release( m );	// release media
 	}
 	return this->playmanager.mp;
 }
 
-bool VLCPlayer::clear_current_media_player( void ) {
+/**
+ *	Attention. In some cases libvlc_media_player can only be release within the stop_callback!
+ */
+void VLCPlayer::clear_current_media_player( void ) {
 	libvlc_media_player_release( this->playmanager.mp );
 	this->playmanager.mp = NULL;
 	delete [] this->playmanager.songpath;
-	return false;
 }
 
 bool VLCPlayer::create_list( int count, song_t *songs ) {
@@ -105,47 +114,46 @@ bool VLCPlayer::clear_list( void ) {
 
 
 bool VLCPlayer::play( void ) {
-	if( this->playmanager.has_songs == false ) {
+
+	// retrieve libvlc_media_player_t
+	libvlc_media_player_t *mp = get_current_media_player();
+	if( mp == NULL ) {
 		return false;
 	}
-	libvlc_media_t *m = NULL; // create media
-	const char *songpath = NULL;
+	
+	if( libvlc_media_player_play( mp ) == -1) {
+		return false;
+	}
 
-	switch( this->playmanager.status ) {
-		case (int) VLCPlayer::PLAY:
-		case (int) VLCPlayer::RESUME:
-			return true;
-		case (int) VLCPlayer::STOP:	// load the song again and play from the beginning
-
-			songpath = this->mlist.list[this->playmanager.current_song].path.c_str();
-			m = libvlc_media_new_path(	this->vlc_instance, songpath );
-
-			this->playmanager.mp = libvlc_media_player_new_from_media( m );
-
-			libvlc_media_release( m );	// release media
-			//delete [] songpath;
-			
-			// and finally play it
-			libvlc_media_player_play( this->playmanager.mp );
-
-			this->playmanager.status = VLCPlayer::PLAY;
-			return true;
-		case (int) VLCPlayer::PAUSE:	// continue playing
-			
-
-			break;
-		default:
-			return false;
-	};
 	return true;
 }
 
+bool VLCPlayer::toggle_play_pause( void ) {
+	// retrieve liblvlc_media_player_t
+	libvlc_media_player_t *mp = this->get_current_media_player();
+	if( mp == NULL) {
+		return false;
+	}
+	libvlc_media_player_pause( mp );
+	return true;;
+}
+
 bool VLCPlayer::pause( void ) {
-	return false;
+	return this->toggle_play_pause();
 }
 
 bool VLCPlayer::resume( void ) {
-	return false;
+	return this->toggle_play_pause();
+}
+
+bool VLCPlayer::stop( void ) {
+	libvlc_media_player_t *mp = this->get_current_media_player();
+	if( mp == NULL) {
+		return false;
+	}
+	libvlc_media_player_stop( mp );
+	this->clear_current_media_player();
+	return true;
 }
 
 
