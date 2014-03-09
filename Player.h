@@ -20,6 +20,9 @@ class Player {
 		virtual bool pause( void ) = 0;
 		virtual bool resume( void ) = 0;
 
+		virtual bool previous( void ) = 0;
+		virtual bool next( void ) = 0;
+
 		virtual bool skip_to( int ) = 0;
 
 		virtual bool volume_up( void ) = 0;

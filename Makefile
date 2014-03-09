@@ -9,13 +9,13 @@ VLCLIB = -lvlc
 
 .PHONY: all
 
-all: main
+all: test
 
 clean:
-	$(RM) main *.so *.o *.h.gch
+	$(RM) test *.so *.o *.h.gch
 
-main: main.c MediaPlayerFactory.o VLCPlayer.o Semaphore.o
-	$(CC) -o $@ main.c *.o $(VLCLIB)
+test: test.c MediaPlayerFactory.o VLCPlayer.o Semaphore.o
+	$(CC) -o $@ test.c *.o $(VLCLIB)
 
 
 MediaPlayerFactory.o: MediaPlayerFactory.cpp MediaPlayerFactory.h VLCPlayer.o 

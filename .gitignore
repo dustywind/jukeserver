@@ -9,3 +9,5 @@ main
 
 
 
+.*.swp
+.fuse_hidden*

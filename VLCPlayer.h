@@ -33,28 +33,46 @@ class VLCPlayer : public Player {
 			playerstatus_t	status;
 
 			libvlc_media_player_t *mp;	// media player
+			char			*songpath;	// has to be stored for the play-duration, otherwise vlcplayer crashes :/
 		} playmanager;
 
 
 	public:
 		VLCPlayer();
 		~VLCPlayer();
+		/* very own methods */
+		bool next_cb( void );	// method which will be called, when the current song stops playin
+								// due to its length
+		
+		/* helper methods */
+		// create a media-player object which can be used by the other methods
+		libvlc_media_player_t *get_current_media_player( void );
+		bool clear_current_media_player( void );
 
-		bool create_list( int, song_t * );
+		/* inherited from Player.h */
+		bool create_list( int, song_t * );	// create a list of songs, which shall be played in
+											// this specific order
 		bool add_to_list( int, song_t * );
 		bool clear_list( void );
 
+		// just "forward" these methods and let the vlc-lib handle everything
 		bool play( void );
 		bool pause( void );
 		bool resume( void );
 
-		bool skip_to( int );
+		//
+		bool previous( void );
+		bool next( void );
+
+		bool skip_to( int );		// skip to x-seconds from the beginning of the current song
 
 		bool volume_up( void );
 		bool volume_down( void );
 
 		bool mute( void );
 		bool unmute( void );
+
+
 
 };
 
