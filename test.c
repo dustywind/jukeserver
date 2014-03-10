@@ -33,15 +33,9 @@ int main(int argc, char **argv) {
 
 	sleep( 5 );
 
-	p->pause();
-
-	sleep( 5 );
-
-	p->resume();
-
-	sleep( 5 );
-
 	p->stop();
+
+	sleep( 5 );
 
 	MediaPlayerFactory::destroy_player();
 

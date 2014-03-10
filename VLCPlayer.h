@@ -55,6 +55,10 @@ class VLCPlayer : public Player {
 		bool add_to_list( int, song_t * );
 		bool clear_list( void );
 
+		// callbacks, which are neccessary to work with libvlc properly
+		void on_media_release(const struct libvlc_event_t *, void *);
+
+
 		// just "forward" these methods and let the vlc-lib handle everything
 		bool toggle_play_pause( void ); // helper method
 		bool play( void );
