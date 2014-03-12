@@ -26,7 +26,7 @@ int main(int argc, char **argv) {
 
 	song_t narf;
 	narf.id = 1;
-	narf.path = songpath;
+	narf.path = songpath.c_str();
 
 	p->create_list( 1, &narf );
 
@@ -36,7 +36,7 @@ int main(int argc, char **argv) {
 
 	p->stop();
 
-	sleep( 5 );
+	sleep( 2 );
 
 	MediaPlayerFactory::destroy_player();
 
