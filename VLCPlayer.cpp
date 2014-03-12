@@ -34,41 +34,17 @@ libvlc_media_player_t *VLCPlayer::get_current_media_player( void ) {
 	if( this->playmanager.mp == NULL) {
 		// if there is a current song, create a media-player
 		// otherwise NULL will be returned
-		
-			const char *songpath_heap = (char *) this->mlist.list[this->playmanager.current_song].path.c_str();
-			// fuck this shit and save it on the stack
-			int len = strlen( songpath_heap ) +1;
-
-			char songpath_stack[ len ];
-			memcpy( songpath_stack, songpath_heap, len );
-
-			delete [] songpath_heap;
 
 			libvlc_media_t *m = libvlc_media_new_path(	this->vlc_instance,
-														songpath_stack );
+														this->mlist.list[this->playmanager.current_song].path.c_str());
 			if( m == NULL ) {
-				//delete [] this->playmanager.songpath;
 				// TODO throw exception?
 				return NULL;
 			}
 
-			// set event-listener for media_release
-			// our songpath must be freed
-			libvlc_event_manager_t *event_manager = libvlc_media_event_manager( m );
-			libvlc_event_attach(	event_manager, 
-									libvlc_MediaFreed,
-									(void(*)(const struct libvlc_event_t *, void*))
-										&VLCPlayer::on_media_release,
-									(void *) NULL
-								);
-
-
 			this->playmanager.mp = libvlc_media_player_new_from_media( m );
 			if( this->playmanager.mp == NULL ) {
-				delete [] this->playmanager.songpath;
 				// TODO throw exception?
-				// libvlc_media_release( m );
-				// return NULL;
 			}
 
 			libvlc_media_release( m );	// release media
@@ -82,19 +58,8 @@ libvlc_media_player_t *VLCPlayer::get_current_media_player( void ) {
  */
 void VLCPlayer::clear_current_media_player( void ) {
 	libvlc_media_player_release( this->playmanager.mp );
-	//this->playmanager.mp = NULL;
-	//delete this->playmanager.songpath;
+	this->playmanager.mp = NULL;
 }
-
-
-void VLCPlayer::on_media_release(const struct libvlc_event_t *, void *songpath) {
-	fprintf(stdout, "on media release\n");
-	//this->clear_current_media_player();
-	//delete ( char *) songpath;
-	return;
-}
-
-
 
 
 bool VLCPlayer::create_list( int count, song_t *songs ) {

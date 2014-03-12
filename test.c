@@ -31,7 +31,7 @@ int main(int argc, char **argv) {
 	p->create_list( 1, &narf );
 	p->play();
 
-	sleep( 5 );
+	sleep( 10 );
 
 	p->stop();
 
