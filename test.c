@@ -36,7 +36,7 @@ int main(int argc, char **argv) {
 
 	p->stop();
 
-	sleep( 2 );
+	sleep( 1 );
 
 	MediaPlayerFactory::destroy_player();
 
