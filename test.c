@@ -29,6 +29,7 @@ int main(int argc, char **argv) {
 	narf.path = songpath;
 
 	p->create_list( 1, &narf );
+
 	p->play();
 
 	sleep( 10 );
