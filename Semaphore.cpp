@@ -7,8 +7,8 @@
 #define C_PTR &(this->c)
 #define M_PTR &(this->m)
 
-#define LOCK_M		pthread_mutex_lock( &(this->m) )
-#define UNLOCK_M	pthread_mutex_unlock( &(this->m) )
+#define LOCK_M      pthread_mutex_lock( &(this->m) )
+#define UNLOCK_M    pthread_mutex_unlock( &(this->m) )
 
 
 Semaphore::Semaphore( int i ) {
@@ -19,7 +19,6 @@ Semaphore::Semaphore( int i ) {
 }
 
 Semaphore::~Semaphore( void ) {
-    // free all Ps with while(?) V(); 	???
     int error = 0;
     if( error = pthread_cond_destroy( C_PTR ) ) {
         // TODO throw error
@@ -46,6 +45,4 @@ void Semaphore::V( void ) {
     pthread_cond_broadcast( C_PTR );
     UNLOCK_M;
 }
-
-
 

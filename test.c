@@ -20,29 +20,27 @@
 
 int main(int argc, char **argv) {
 
-	std::string songpath = "/media/data/Musik/Nine Inch Nails/Broken/01 - Nine Inch Nails - Pinion.mp3";
-	//std::string songpath = "/media/data/test.mp3";
+    //std::string songpath = "/media/data/Musik/Nine Inch Nails/Broken/01 - Nine Inch Nails - Pinion.mp3";
+    std::string songpath = "/media/data/test.mp3";
 
-	Player *p = MediaPlayerFactory::create_player();
+    Player *p = MediaPlayerFactory::create_player();
 
-	song_t narf;
-	narf.id = 1;
-	narf.path = songpath.c_str();
-
-	
-	p->create_list( 1, &narf );
-
-	p->play();
-
-	sleep( 10 );
-
-	p->stop();
-
-	sleep( 1 );
-
-	MediaPlayerFactory::destroy_player();
+    song_t narf;
+    narf.id = 1;
+    narf.path = songpath.c_str();
 
 
-	return EXIT_SUCCESS;
+    p->create_list( 1, &narf );
+
+    p->play();
+
+    sleep( 5 );
+
+    //p->stop();
+
+
+    MediaPlayerFactory::destroy_player();
+
+    return EXIT_SUCCESS;
 }
 

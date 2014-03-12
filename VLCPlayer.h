@@ -3,6 +3,7 @@
 
 #include "jukebox.h"
 #include "Player.h"
+#include "Semaphore.h"
 
 #ifndef VLCPLAYER_H
 #define VLCPLAYER_H
@@ -22,9 +23,15 @@ class VLCPlayer : public Player {
         enum playerstatus_t { PLAY=0, STOP, PAUSE, RESUME };
         libvlc_instance_t *vlc_instance;
 
+        struct thread_control {
+            Semaphore       *s;
+            pthread_t       *play_next;
+            volatile bool   kill;
+        } thread_control;
+
         struct media_list_t {
-            int count;
-            song_t *list;
+            int     count;
+            song_t  *list;
         } mlist;
 
         struct playmanager {
@@ -35,6 +42,11 @@ class VLCPlayer : public Player {
             libvlc_media_player_t *mp;  // media player
             char        *songpath;  // has to be stored for the play-duration, otherwise vlcplayer crashes :/
         } playmanager;
+
+
+        // methods
+        static void *play_next_routine_helper( void * );
+        void *play_next_routine( void * );
 
 
     public:
@@ -54,7 +66,7 @@ class VLCPlayer : public Player {
 
         // callbacks, which are neccessary to work with libvlc properly
         // catch the stop-event, to play the next song
-        void next_on_media_player_stop(const struct libvlc_event_t *, void *);
+        void next_when_media_ended(const struct libvlc_event_t *, void *);
 
 
         // just "forward" these methods and let the vlc-lib handle everything

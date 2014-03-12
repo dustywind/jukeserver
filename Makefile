@@ -12,6 +12,7 @@ VLCLIB = -lvlc
 all: test
 
 clean:
+
 	$(RM) test *.so *.o *.h.gch
 
 test: test.c MediaPlayerFactory.o VLCPlayer.o Semaphore.o
@@ -21,7 +22,7 @@ MediaPlayerFactory.o: MediaPlayerFactory.cpp MediaPlayerFactory.h VLCPlayer.o
 	$(CC) -c -fPIC MediaPlayerFactory.cpp
 
 VLCPlayer.o: VLCPlayer.cpp VLCPlayer.h Player.h
-	$(CC) -o $@ -c -fPIC VLCPlayer.cpp $(VLCLIB)
+	$(CC) -o $@ -c -fPIC VLCPlayer.cpp $(VLCLIB) $(PTHREAD)
 
 Semaphore.o: Semaphore.cpp Semaphore.h
 	$(CC) -c -fPIC Semaphore.cpp $(PTHREAD)
