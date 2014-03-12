@@ -20,53 +20,53 @@
 
 class MPlayerPlayer {
 
-	private:
-		static MPlayerPlayer* _instance;	// implicit null?
+    private:
+        static MPlayerPlayer* _instance;	// implicit null?
 
-		// pid of child-process
-		int childpid;
-	
-		// descriptors for communicating with the child-process
-		int p_stdin[2];
-		int p_stdout[2];
+        // pid of child-process
+        int childpid;
 
-		// list of songs, which shall be played
-		int slistLen;
-		song_t *slist;
+        // descriptors for communicating with the child-process
+        int p_stdin[2];
+        int p_stdout[2];
 
-		bool hasSong;
-		bool isPlaying;
+        // list of songs, which shall be played
+        int slistLen;
+        song_t *slist;
 
-	private:
-		MPlayerPlayer();
-		~MPlayerPlayer();
-		bool loadSong( char * );
+        bool hasSong;
+        bool isPlaying;
 
-		bool collectZombie( int );
-	
-	public:
-		static MPlayerPlayer *getInstance( void );
-		static void selfdestruct( void );
+    private:
+        MPlayerPlayer();
+        ~MPlayerPlayer();
+        bool loadSong( char * );
 
-		// signal handler
-		void burychild(int, siginfo_t *, void * );
+        bool collectZombie( int );
 
-		MPlayerPlayer *createList( int, song_t * );
-		MPlayerPlayer *addToList( int, song_t * );
-		MPlayerPlayer *clearList( void );
+    public:
+        static MPlayerPlayer *getInstance( void );
+        static void selfdestruct( void );
 
-		bool pause(void);
-		bool resume(void);
+        // signal handler
+        void burychild(int, siginfo_t *, void * );
 
-		bool stop(void);
+        MPlayerPlayer *createList( int, song_t * );
+        MPlayerPlayer *addToList( int, song_t * );
+        MPlayerPlayer *clearList( void );
 
-		bool skipTo(int seconds);
+        bool pause(void);
+        bool resume(void);
 
-		bool volumeUp(void);
-		bool volumeDown(void);
+        bool stop(void);
 
-		bool mute(void);
-		bool unmute(void);
+        bool skipTo(int seconds);
+
+        bool volumeUp(void);
+        bool volumeDown(void);
+
+        bool mute(void);
+        bool unmute(void);
 };
 
 

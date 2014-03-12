@@ -8,12 +8,12 @@
 
 class MediaPlayerFactory {
 
-	private:
-		static Player *_instance;
-	
-	public:
-		static Player *create_player( void );
-		static void destroy_player( void );
+    private:
+        static Player *_instance;
+
+    public:
+        static Player *create_player( void );
+        static void destroy_player( void );
 };
 
 

@@ -19,8 +19,9 @@
 #include "MediaPlayerFactory.h"
 
 int main(int argc, char **argv) {
-	//std::string songpath = "/media/data/Musik/Nine Inch Nails/Broken/01 - Nine Inch Nails - Pinion.mp3";
-	std::string songpath = "/media/data/test.mp3";
+
+	std::string songpath = "/media/data/Musik/Nine Inch Nails/Broken/01 - Nine Inch Nails - Pinion.mp3";
+	//std::string songpath = "/media/data/test.mp3";
 
 	Player *p = MediaPlayerFactory::create_player();
 
@@ -28,6 +29,7 @@ int main(int argc, char **argv) {
 	narf.id = 1;
 	narf.path = songpath.c_str();
 
+	
 	p->create_list( 1, &narf );
 
 	p->play();
@@ -39,6 +41,7 @@ int main(int argc, char **argv) {
 	sleep( 1 );
 
 	MediaPlayerFactory::destroy_player();
+
 
 	return EXIT_SUCCESS;
 }

@@ -6,18 +6,18 @@
 
 class Semaphore {
 
-	private:
-		int count;
+    private:
+        int count;
 
-		pthread_cond_t c;
-		pthread_mutex_t m;
-	
-	public:
-		Semaphore( int );
-		~Semaphore();
+        pthread_cond_t c;
+        pthread_mutex_t m;
 
-		void P( void );
-		void V( void );
+    public:
+        Semaphore( int );
+        ~Semaphore();
+
+        void P( void );
+        void V( void );
 
 };
 
