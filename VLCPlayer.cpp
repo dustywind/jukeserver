@@ -5,7 +5,7 @@
 #include <vlc/vlc.h>
 
 #include "jukebox.h"
-
+#include "AtomicBool.h"
 #include "Semaphore.h"
 
 #include "VLCPlayer.h"
@@ -24,10 +24,9 @@ VLCPlayer::VLCPlayer() {
     this->mlist.list = NULL;
 
     // create a thread, which is responsible for playing the next song
-    this->thread_control.s = new Semaphore( 1 );
-    this->thread_control.play_next = (pthread_t*) malloc( sizeof(pthread_t) );
-    
-    pthread_create( this->thread_control.play_next,
+    this->thread_control.s = new Semaphore( 0 );
+    this->thread_control.kill = new AtomicBool( false );
+    pthread_create( &(this->thread_control.play_next),
                     NULL,
                     &VLCPlayer::play_next_routine_helper,
                     this );
@@ -40,6 +39,14 @@ VLCPlayer::~VLCPlayer() {
     libvlc_release( this->vlc_instance );
     // block, till fully exited
     this->clear_list();
+
+
+    //this->thread_control.kill = true;
+    this->thread_control.kill->set( true );
+    this->thread_control.s->V();
+    pthread_join( this->thread_control.play_next, NULL );
+    delete this->thread_control.s;
+    delete this->thread_control.kill;
 }
 
 // thread routine
@@ -47,16 +54,17 @@ void *VLCPlayer::play_next_routine_helper( void *context) {
     (( VLCPlayer *) context)->play_next_routine( NULL );
     pthread_exit( NULL );
 }
+
 void *VLCPlayer::play_next_routine(void *args) {
     // get my semaphore
     Semaphore *s =  this->thread_control.s;
-    volatile bool *suicide = &( this->thread_control.kill );
+    //volatile bool *suicide = &( this->thread_control.kill );
     while( true ) {
         // block
         s->P();
 
         // may I have to kill myself?
-        if ( *suicide ) {
+        if ( this->thread_control.kill->get() ) {
             break;
         }
         // otherwise
@@ -87,8 +95,8 @@ libvlc_media_player_t *VLCPlayer::get_current_media_player( void ) {
         libvlc_event_manager_t *em = libvlc_media_player_event_manager( this->playmanager.mp );
         libvlc_event_attach(    em,
                                 libvlc_MediaPlayerEndReached,
-                                (void (*)(const struct libvlc_event_t *, void *)) &VLCPlayer::next_when_media_ended,
-                                NULL );
+                                &VLCPlayer::next_when_media_ended_helper,
+                                this);
 
         libvlc_media_release( m );    // release media
     }
@@ -104,9 +112,13 @@ void VLCPlayer::clear_current_media_player( void ) {
     this->playmanager.mp = NULL;
 }
 
+void VLCPlayer::next_when_media_ended_helper(const struct libvlc_event_t *event, void *context) {
+    return ((VLCPlayer *)context)->next_when_media_ended( event, NULL );
+}
+
 void VLCPlayer::next_when_media_ended(const struct libvlc_event_t *, void *) {
-    fprintf(stdout, "song ended\n");
     // give a signal to next-thread, that the next song can be played
+    this->thread_control.s->V();
     return;
 }
 
@@ -204,8 +216,6 @@ bool VLCPlayer::stop( void ) {
     libvlc_media_player_stop( mp );
     this->clear_current_media_player();
     
-    fprintf( stdout, "return stop();\n" );
-
     return true;
 }
 

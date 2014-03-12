@@ -24,7 +24,7 @@ Player *MediaPlayerFactory::create_player( void ) {
 
 
 void MediaPlayerFactory::destroy_player( void ) {
-    delete MediaPlayerFactory::_instance;
+    delete (VLCPlayer *)MediaPlayerFactory::_instance;
     MediaPlayerFactory::_instance = NULL;
     return;
 }

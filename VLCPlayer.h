@@ -4,17 +4,10 @@
 #include "jukebox.h"
 #include "Player.h"
 #include "Semaphore.h"
+#include "AtomicBool.h"
 
 #ifndef VLCPLAYER_H
 #define VLCPLAYER_H
-
-
-/*
-   typedef struct media_list_t {
-   int count;
-   song_t *list;
-   } media_list_t;
-   */
 
 
 class VLCPlayer : public Player {
@@ -25,8 +18,9 @@ class VLCPlayer : public Player {
 
         struct thread_control {
             Semaphore       *s;
-            pthread_t       *play_next;
-            volatile bool   kill;
+            pthread_t       play_next;
+            //volatile bool   kill;
+            AtomicBool      *kill;
         } thread_control;
 
         struct media_list_t {
@@ -48,6 +42,10 @@ class VLCPlayer : public Player {
         static void *play_next_routine_helper( void * );
         void *play_next_routine( void * );
 
+        // callbacks, which are neccessary to work with libvlc properly
+        // catch the stop-event, to play the next song
+        static void next_when_media_ended_helper(const struct libvlc_event_t *, void *);
+        void next_when_media_ended(const struct libvlc_event_t *, void *);
 
     public:
         VLCPlayer();
@@ -63,11 +61,6 @@ class VLCPlayer : public Player {
         // this specific order
         bool add_to_list( int, song_t * );
         bool clear_list( void );
-
-        // callbacks, which are neccessary to work with libvlc properly
-        // catch the stop-event, to play the next song
-        void next_when_media_ended(const struct libvlc_event_t *, void *);
-
 
         // just "forward" these methods and let the vlc-lib handle everything
         bool toggle_play_pause( void ); // helper method
@@ -87,9 +80,6 @@ class VLCPlayer : public Player {
 
         bool mute( void );
         bool unmute( void );
-
-
-
 };
 
 #endif /* VLCPLAYER */
