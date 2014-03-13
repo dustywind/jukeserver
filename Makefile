@@ -15,7 +15,7 @@ clean:
 
 	$(RM) test *.so *.o *.h.gch
 
-test: test.c MediaPlayerFactory.o VLCPlayer.o Semaphore.o
+test: test.c MediaPlayerFactory.o VLCPlayer.o Semaphore.o Debug.o
 	$(CC) -o $@ test.c *.o $(VLCLIB)
 
 MediaPlayerFactory.o: MediaPlayerFactory.cpp MediaPlayerFactory.h VLCPlayer.o 
@@ -29,3 +29,6 @@ Semaphore.o: Semaphore.cpp Semaphore.h
 
 AtomicBool.o: AtomicBool.cpp AtomicBool.h
 	$(CC) -c -fPIC AtomicBool.cpp $(PTHREAD)
+
+Debug.o: Debug.cpp Debug.h
+	$(CC) -c -fPIC Debug.cpp

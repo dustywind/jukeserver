@@ -4,6 +4,7 @@
 
 #include <vlc/vlc.h>
 
+#include "Debug.h"
 #include "jukebox.h"
 #include "AtomicBool.h"
 #include "Semaphore.h"
@@ -69,7 +70,7 @@ void *VLCPlayer::play_next_routine(void *args) {
         }
         // otherwise
         // ...
-
+        this->next();
     }
     return NULL;
 };
@@ -225,7 +226,19 @@ bool VLCPlayer::previous( void ) {
 }
 
 bool VLCPlayer::next( void ) {
+
+    Debug::print("Hallo welt");
+
     this->clear_current_media_player();
+   
+    // this->playmanager.current_song;
+    // this->mlist.count
+    if( this->playmanager.current_song > this->mlist.count ) {
+        return false; 
+    }
+
+    this->playmanager.current_song++;
+    this->play();
     return false;
 }
 

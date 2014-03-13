@@ -21,20 +21,23 @@
 int main(int argc, char **argv) {
 
     //std::string songpath = "/media/data/Musik/Nine Inch Nails/Broken/01 - Nine Inch Nails - Pinion.mp3";
-    std::string songpath = "/media/data/test.mp3";
+    std::string song_1 = "/media/data/test_1.mp3";
+    std::string song_2 = "/media/data/test_2.mp3";
 
     Player *p = MediaPlayerFactory::create_player();
 
-    song_t narf;
-    narf.id = 1;
-    narf.path = songpath.c_str();
+    song_t narf[2];
+    narf[0].id = 1;
+    narf[0].path = song_1.c_str();
 
+    narf[1].id = 2;
+    narf[1].path = song_2.c_str();
 
-    p->create_list( 1, &narf );
+    p->create_list( 2, narf );
 
     p->play();
 
-    sleep( 5 );
+    sleep( 20 );
 
     //p->stop();
 
