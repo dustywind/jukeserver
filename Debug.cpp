@@ -4,7 +4,7 @@
 
 void Debug::print( char *msg ) {
     #ifdef DEBUG
-    fprintf( stderr, "%s\n", msg );
+    fprintf( stderr, "DEBUG:\t%s\n", msg );
     #endif /* DEBUG */
 }
 
